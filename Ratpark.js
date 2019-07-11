@@ -57,8 +57,10 @@ class Buddy {
 class UserScreen {
 
     constructor(allBuddies, user) {
+        this.allBuddies = allBuddies;
         this.buddies = allBuddies;
         this.user = user;
+        this.filterIndex = 0;
     }
 
     distanceFilter() {
@@ -71,19 +73,19 @@ class UserScreen {
     }
 
     prefFilter(index, currBuddies) {
-        let removed = [];
+        this.filterIndex = index;
         let currPref = this.user.ranking[index];
         if (currPref == "substance") {
             for (let i = 0; i < currBuddies.length; i++) {
                 if (currBuddies[i].substance != this.user.substance) {
-                    removed.push(currBuddies.splice(i, 1));
+                    currBuddies.splice(i, 1);
                     i--;
                 }
             }
         } else if (currPref == "gender") {
             for (let i = 0; i < currBuddies.length; i++) {
                 if (currBuddies[i].gender != this.user.genderPref) {
-                    removed.push(currBuddies.splice(i, 1));
+                    currBuddies.splice(i, 1);
                     i--;
                 }
             }
@@ -91,7 +93,7 @@ class UserScreen {
             for (let i = 0; i < currBuddies.length; i++) {
                 if (currBuddies[i].age < this.user.ageLowerBound ||
                     currBuddies[i].age > this.user.ageUpperBound) {
-                    removed.push(currBuddies.splice(i, 1));
+                    currBuddies.splice(i, 1);
                     i--;
                 }
             }
@@ -99,12 +101,14 @@ class UserScreen {
 
         if (currBuddies.length == 0) {
             if (index + 1 <= ranking.length - 1) {
-                return prefFilter(index + 1, this.buddies);
+                prefFilter(index + 1, this.buddies);
             } else {
-                return this.buddies;
+                return;
             }
         } else {
-            return currBuddies;
+            this.buddies = currBuddies;
         }
     }
+
+
 }
